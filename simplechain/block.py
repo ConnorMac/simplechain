@@ -49,6 +49,10 @@ class Block(object):
 
     @staticmethod
     def build_block_hash(index, timestamp, data, previous_hash):
+        """
+        Builds the block hash
+        Can be extended at a later stage to add more functionality on mine
+        """
         str_to_hash = str(index) + str(timestamp) + str(data) + str(previous_hash)
         block_hash = sha256(
             bytes(str_to_hash, encoding='utf-8')

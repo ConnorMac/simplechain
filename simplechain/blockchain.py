@@ -24,7 +24,7 @@ class Blockchain(object):
         Use for dumping the blockchain data in a consumable format
         """
         blockchain_raw_array = []
-        for block in blockchain:
+        for block in self.block_array:
             blockchain_raw_array.append(block.to_dict())
 
         blockchain = {

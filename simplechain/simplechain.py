@@ -15,13 +15,25 @@ class SimplechainProtocol(asyncio.Protocol):
     """
 
     def __init__(self):
+        # TODO: Look for nodes it can load the blockchain from
         self.blockchain = Blockchain()
         self.transport = None
         self.stream_data = {}
 
     def connection_made(self, transport: asyncio.Transport):
         self.transport = transport
-        self.transport.write(self.blockchain.to_json())
+        self.log(
+            message=str(self.transport.get_extra_info('peername')) + ' connected to node.'
+        )
+        blockchain_bytes = str.encode(self.blockchain.to_json())
+        # Dumps blockchain json byte data
+        self.transport.write(blockchain_bytes)
+
+    def log(self, message):
+        """
+        Logging function
+        """
+        print(message)
 
 loop = asyncio.get_event_loop()
 # Each client connection will create a new protocol instance
