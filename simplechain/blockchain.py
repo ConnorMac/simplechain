@@ -1,6 +1,7 @@
 from hashlib import sha256
 import time
 from .block import Block
+import json
 
 
 class Blockchain(object):
@@ -17,3 +18,16 @@ class Blockchain(object):
 
     def append_block_to_chain(self, block):
         return self.block_array.append(block)
+
+    def to_json(self):
+        """
+        Use for dumping the blockchain data in a consumable format
+        """
+        blockchain_raw_array = []
+        for block in blockchain:
+            blockchain_raw_array.append(block.to_dict())
+
+        blockchain = {
+            "blockchain": blockchain_raw_array
+        }
+        return json.dumps(blockchain)

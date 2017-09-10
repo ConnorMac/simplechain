@@ -38,6 +38,15 @@ class Block(object):
 
         return block
 
+    def to_dict(self):
+        return {
+            "index": self.index,
+            "previous_hash": self.previous_hash,
+            "timestamp": self.timestamp,
+            "hash": self.hash,
+            "data": self.data
+        }
+
     @staticmethod
     def build_block_hash(index, timestamp, data, previous_hash):
         str_to_hash = str(index) + str(timestamp) + str(data) + str(previous_hash)
