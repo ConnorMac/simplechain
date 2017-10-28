@@ -19,15 +19,21 @@ class Blockchain(object):
     def append_block_to_chain(self, block):
         return self.block_array.append(block)
 
+    def to_raw_array(self):
+        blockchain_raw_array = []
+        for block in self.block_array:
+            blockchain_raw_array.append(block.to_dict())
+        return blockchain_raw_array
+
     def to_json(self):
         """
         Use for dumping the blockchain data in a consumable format
         """
-        blockchain_raw_array = []
-        for block in self.block_array:
-            blockchain_raw_array.append(block.to_dict())
+        blockchain_raw_array = self.to_raw_array()
+        return json.dumps(blockchain_raw_array)
 
-        blockchain = {
-            "blockchain": blockchain_raw_array
-        }
-        return json.dumps(blockchain)
+    @classmethod
+    def from_json(cls, blockchain_json):
+        return cls(
+            block_array=blockchain_json.get('blockchain', [])
+        )
