@@ -1,6 +1,6 @@
 from hashlib import sha256
 import time
-from .block import Block
+from block import Block
 import json
 
 
