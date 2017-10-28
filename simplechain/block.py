@@ -63,3 +63,13 @@ class Block(object):
     def build_genesis_block(cls, data="Welcome to simplechain"):
         data = data
         return cls.build_new_block(data)
+
+    @classmethod
+    def build_from_json(cls, block_json):
+        return cls(
+            index=block_json.get('index'),
+            previous_hash=block_json.get('previous_hash'),
+            timestamp=block_json.get('timestamp'),
+            block_hash=block_json.get('hash'),
+            data=block_json.get('data')
+        )

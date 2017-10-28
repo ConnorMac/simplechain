@@ -10,49 +10,7 @@ import asyncio
 import json
 from blockchain import Blockchain
 from block import Block
-
-
-class SimplechainProtocol(asyncio.Protocol):
-    """
-    Protocol for Simplechain node communication
-    """
-
-    def __init__(self, nodes, blockchain):
-        self.nodes = nodes
-        self.blockchain = blockchain
-        self.transport = None
-        self.stream_data = {}
-
-    def __call__(self):
-        return self
-
-    def connection_made(self, transport: asyncio.Transport):
-        self.transport = transport
-        self.log(
-            message=str(self.transport.get_extra_info('peername')) + ' connected to node.'
-        )
-        response_dict = {
-            "blockchain": self.blockchain.to_raw_array()
-        }
-        response_dict['nodes'] = self.nodes
-        response_json_bytes = str.encode(json.dumps(response_dict))
-        # Dumps blockchain json byte data
-        self.transport.write(response_json_bytes)
-
-    def data_received(self, data):
-        # TODO: Parse recieved data
-        print('Data received: {!r}'.format(data.decode()))
-
-    def connection_lost(self, exc):
-        self.log(
-            message='Connection lost to: ' + str(self.transport.get_extra_info('peername'))
-        )
-
-    def log(self, message):
-        """
-        Logging function
-        """
-        print(message)
+from network_protocol import SimplechainProtocol
 
 
 def main(argv):
