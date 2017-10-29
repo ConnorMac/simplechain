@@ -30,8 +30,9 @@ def main(argv):
 
     loop = asyncio.get_event_loop()
     # Each client connection will create a new protocol instance
+    node_array = []
     coro = loop.create_server(
-        SimplechainProtocol(nodes, blockchain),
+        SimplechainProtocol(blockchain, nodes),
         '127.0.0.1'
     )
     # Create the server
@@ -41,9 +42,8 @@ def main(argv):
     # Create client coroutines for each passed node
     if nodes:
         for node in nodes:
-            print(node.split(':')[1])
             clients[node] = loop.create_connection(
-                SimplechainProtocol(nodes, blockchain),
+                SimplechainProtocol(blockchain, nodes),
                 str(node.split(':')[0]), int(node.split(':')[1])
             )
             loop.run_until_complete(clients[node])

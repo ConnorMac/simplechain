@@ -11,13 +11,13 @@ class Block(object):
         self.data = data
 
     @classmethod
-    def build_new_block(cls, data, previous_block=None):
+    def build_new_block(cls, data='', previous_block=None):
         """
         Returns a new instance of the block class
         """
         if previous_block:
             new_index = previous_block.index+1
-            previous_hash = previous_block.previous_hash
+            previous_hash = previous_block.hash
         else:
             new_index = 0
             previous_hash = ''

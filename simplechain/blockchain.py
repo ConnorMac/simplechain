@@ -18,6 +18,14 @@ class Blockchain(object):
     def append_block_to_chain(self, block):
         return self.block_array.append(block)
 
+    def create_and_append_block(self, data=''):
+        new_block = Block.build_new_block(
+            data=data,
+            previous_block=self.latest_block
+        )
+        self.append_block_to_chain(new_block)
+        return new_block
+
     def to_raw_array(self):
         blockchain_raw_array = []
         for block in self.block_array:
@@ -49,6 +57,7 @@ class Blockchain(object):
         self.block_array = block_array
 
     def calculate_and_update_main_chain(self, external_chain):
+        # Should be replaced by some proper consensus
         if len(external_chain) > len(self.block_array):
             block_array = self._array_to_block_array(
                 external_chain
