@@ -1,7 +1,7 @@
 # simplechain
 A simple blockchain implementation in python.
 
-A work in progress.
+A work in progress meant to be for learning purposes.
 
 # How to use
 
