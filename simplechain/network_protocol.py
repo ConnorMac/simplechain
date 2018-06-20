@@ -11,7 +11,8 @@ from block import Block
 
 class NetworkFunctions(Enum):
     CREATE_AND_ADD_BLOCK = 'create_and_add_block'
-    CHAIN_DUMP = 'chain_dump'
+    CHAIN_DUMP = 'chain_dump',
+    PEER_UPDATE = 'peer_update'
 
 
 class SimplechainProtocol(asyncio.Protocol):
@@ -60,6 +61,8 @@ class SimplechainProtocol(asyncio.Protocol):
                 )
             elif function == NetworkFunctions.CHAIN_DUMP.value:
                 self.consume_chain_dump_data(data_dict)
+            elif function == NetworkFunctions.PEER_UPDATE.value:
+                self._update_nodes(data_dict.get('nodes'))
         except json.decoder.JSONDecodeError as e:
             self.log('Recieved data is not valid json')
 
@@ -81,6 +84,7 @@ class SimplechainProtocol(asyncio.Protocol):
         if nodes:
             for node in nodes:
                 self.nodes[str(node)] = node
+        self.broadcast_peers_to_peers()
 
     def get_node_array(self):
         node_array = []
@@ -96,9 +100,19 @@ class SimplechainProtocol(asyncio.Protocol):
             self.log('Broadcasting new chain to:' + client)
             transport.write(self.create_chain_dump_data())
 
+    def broadcast_peers_to_peers(self):
+        node_dict = {
+            "function": NetworkFunctions.PEER_UPDATE.value,
+            "peers": self.get_node_array()
+        }
+        for client in self.clients:
+            transport = self.clients.get(client)
+            self.log('Broadcasting new peers to all nodes')
+            transport.write(str.encode(json.dumps(response_dict)))
+
     def create_chain_dump_data(self):
         response_dict = {
-            "function": "chain_dump",
+            "function": NetworkFunctions.CHAIN_DUMP.value,
             "blockchain": self.blockchain.to_raw_array()
         }
         response_dict['nodes'] = self.get_node_array()
@@ -108,4 +122,4 @@ class SimplechainProtocol(asyncio.Protocol):
         self.blockchain.calculate_and_update_main_chain(
             data.get('blockchain', [])
         )
-        # self._update_nodes(data.get('nodes', []))
+        self._update_nodes(data.get('nodes'))
